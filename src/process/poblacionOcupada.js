@@ -3,14 +3,29 @@ var cron = require('node-cron');
 const insertData = require('../services/poblacionOcupadaService');
 const CRON_TIME_2 = require('../utils/constants');
 
-
 cron.schedule(CRON_TIME_2, () => {
     axios.get('http://localhost:3200/api/empleo/poblacionActiva', {}).then (response => {
         axios.get('http://localhost:3200/api/empleo/poblacionParada', {}).then (response2 => {
-            let index1 = response.data.length - 1;
-            let index2 = response2.data.length - 1;
-            let datasetProcessed = processDataset(response.data[index1], response2.data[index2]);
-            insertData(datasetProcessed);
+            if (response2.data.length == 0 || response.data.length == 0) {
+                return;
+            }
+
+            axios.get('http://localhost:3200/api/empleo/poblacionOcupada', {}).then (response3 => {
+                let index1 = response.data.length - 1;
+                let index2 = response2.data.length - 1;
+                let size = response3.data.length - 1;
+                let dateModified = response2.data[index2].dateModified;
+                if (response3.data.length == 0)  {
+                    let datasetProcessed = processDataset(response.data[index1], response2.data[index2]);
+                    insertData(datasetProcessed);
+                    return;
+                }
+                if (response3.data[size].dateModified != dateModified) {
+                    let datasetProcessed = processDataset(response.data[index1], response2.data[index2]);
+                    insertData(datasetProcessed);
+                    return;
+                }
+            }).catch(error => console.log(error))
         }).catch(error => console.log(error)) 
     }).catch(error => console.log(error))
 });
@@ -23,6 +38,10 @@ function processDataset (dataset1, dataset2) {
     let newQuarterlyWomen = [[], []];
     let newQuarterlyMen = [[], []];
     let newQuarterlyTotal = [[], []];
+
+    let dateModified = '';
+
+    dateModified = dataset1.dateModified;
 
     for (let i = 0; i < dataset1.annualTotal[0].length; i++) {
         let valor = dataset1.annualTotal[0][i] - dataset2.annualTotal[0][i];
@@ -67,6 +86,7 @@ function processDataset (dataset1, dataset2) {
         quarterlyTotal: newQuarterlyTotal,
         quarterlyMen: newQuarterlyMen,
         quarterlyWomen: newQuarterlyWomen,
+        dateModified: dateModified
     });
 
     return json;

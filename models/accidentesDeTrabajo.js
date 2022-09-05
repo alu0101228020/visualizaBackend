@@ -62,6 +62,9 @@ const AccidentesDeTrabajoSchema = new Schema({
         Array
       ]
     },
+    dateModified: {
+      type: String
+    }
   });
   
 module.exports = mongoose.model('AccidentesDeTrabajo', AccidentesDeTrabajoSchema, 'AccidentesDeTrabajo');

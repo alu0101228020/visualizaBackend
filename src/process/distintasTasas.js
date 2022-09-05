@@ -12,8 +12,25 @@ cron.schedule(CRON_TIME, () => {
             }
         }
         axios.get(url, {}).then (response2 => {
-            let datasetProcessed = processDataset(response2);
-            insertData(datasetProcessed);
+            let dateModified = '';
+            response2.data.categories.forEach(category => {
+                if (category.variable === 'Periodos') {
+                    dateModified = String(category.codes[0]);
+                }
+            });
+            axios.get('http://localhost:3200/api/empleo/distintasTasas', {}).then (response3 => {
+                let size = response3.data.length - 1;
+                if (response3.data.length == 0) {
+                    let datasetProcessed = processDataset(response2);
+                    insertData(datasetProcessed);
+                    return;
+                }
+                if (response3.data[size].dateModified != dateModified) {
+                    let datasetProcessed = processDataset(response2);
+                    insertData(datasetProcessed);
+                    return;
+                }
+            }).catch(error => console.log(error))
 
         }).catch(error => console.log(error))
 
@@ -57,6 +74,14 @@ function processDataset (dataset) {
     let annualValorWomenExercise = 0;
     let annualValorWomenUnemployment = 0;
     let annualValorWomenEmployment = 0;
+
+    let dateModified = '';
+
+    dataset.data.categories.forEach(category => {
+        if (category.variable === 'Periodos') {
+            dateModified = category.codes[0];
+        }
+    });
 
     for (const dataObj of dataset.data.data.reverse()) {
         iteration++;
@@ -190,6 +215,8 @@ function processDataset (dataset) {
         quarterlyTotalEmployment: quarterlyTotalEmployment,
         quarterlyMenEmployment: quarterlyMenEmployment,
         quarterlyWomenEmployment: quarterlyWomenEmployment,
+
+        dateModified: dateModified
     });
 
     return json;

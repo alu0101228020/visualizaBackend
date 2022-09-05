@@ -47,6 +47,9 @@ const NoRecaidasDeAccidentesSchema = new Schema({
         Array
       ]
     },
+    dateModified: {
+      type: String
+    }
   });
   
 module.exports = mongoose.model('NoRecaidasDeAccidentes', NoRecaidasDeAccidentesSchema, 'NoRecaidasDeAccidentes');

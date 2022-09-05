@@ -4,11 +4,11 @@ function insertData (datasetProcessed) {
     const {annualTotalTotal, annualMenTotal, annualWomenTotal, annualTotalMild,
         annualMenMild, annualWomenMild, annualTotalSerious,
         annualMenSerious, annualWomenSerious,
-        annualTotalMortal, annualMenMortal, annualWomenMortal} = JSON.parse(datasetProcessed);
+        annualTotalMortal, annualMenMortal, annualWomenMortal, dateModified} = JSON.parse(datasetProcessed);
     const dataset1 = new accidentesDeTrabajo({annualTotalTotal, annualMenTotal, annualWomenTotal, annualTotalMild,
         annualMenMild, annualWomenMild, annualTotalSerious,
         annualMenSerious, annualWomenSerious,
-        annualTotalMortal, annualMenMortal, annualWomenMortal});
+        annualTotalMortal, annualMenMortal, annualWomenMortal, dateModified});
     return dataset1.save();
 }
 

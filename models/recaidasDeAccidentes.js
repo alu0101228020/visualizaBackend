@@ -47,6 +47,9 @@ const RecaidasDeAccidentesSchema = new Schema({
         Array
       ]
     },
+    dateModified: {
+      type: String
+    }
   });
   
 module.exports = mongoose.model('RecaidasDeAccidentes', RecaidasDeAccidentesSchema, 'RecaidasDeAccidentes');

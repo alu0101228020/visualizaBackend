@@ -61,6 +61,9 @@ const GananciaMediaAnualSchema = new Schema({
         type: [
           Array
         ]
+      },
+      dateModified: {
+        type: String
       }
   });
   

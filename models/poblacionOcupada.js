@@ -31,6 +31,9 @@ const PoblacionOcupadaSchema = new Schema({
       type: [
         Array
       ]
+    },
+    dateModified: {
+      type: String
     }
   });
   

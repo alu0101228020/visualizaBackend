@@ -92,6 +92,9 @@ const DistintasTasasSchema = new Schema({
         Array
       ]
     },
+    dateModified: {
+      type: String
+    }
   });
   
 module.exports = mongoose.model('DistintasTasas', DistintasTasasSchema, 'DistintasTasas');

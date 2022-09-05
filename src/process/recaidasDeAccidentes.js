@@ -12,8 +12,25 @@ cron.schedule(CRON_TIME, () => {
             }
         }
         axios.get(url, {}).then (response2 => {
-            let datasetProcessed = processDataset(response2);
-            insertData(datasetProcessed);
+            let dateModified = '';
+            response2.data.categories.forEach(category => {
+                if (category.variable === "Años") {
+                    dateModified = String(category.codes[0]);
+                }
+            });
+            axios.get('http://localhost:3200/api/empleo/recaidasDeAccidentes', {}).then (response3 => {
+                let size = response3.data.length - 1;
+                if (response3.data.length == 0) {
+                    let datasetProcessed = processDataset(response2);
+                    insertData(datasetProcessed);
+                    return;
+                }
+                if (response3.data[size].dateModified != dateModified) {
+                    let datasetProcessed = processDataset(response2);
+                    insertData(datasetProcessed);
+                    return;
+                }
+            }).catch(error => console.log(error))
 
         }).catch(error => console.log(error))
 
@@ -32,6 +49,14 @@ function processDataset (dataset) {
     let annualWomenSerious = [[], []];
     let annualMenSerious = [[], []];
     let annualTotalSerious = [[], []];
+
+    let dateModified = '';
+
+    dataset.data.categories.forEach(category => {
+        if (category.variable === 'Años') {
+            dateModified = category.codes[0];
+        }
+    });
 
     for (const dataObj of dataset.data.data) {
         if (dataObj.dimCodes[0] === "ES70" && dataObj.dimCodes[1] === "T") {
@@ -89,7 +114,8 @@ function processDataset (dataset) {
         annualWomenMild: annualWomenMild,
         annualTotalSerious: annualTotalSerious,
         annualMenSerious: annualMenSerious,
-        annualWomenSerious: annualWomenSerious
+        annualWomenSerious: annualWomenSerious,
+        dateModified: dateModified
     });
 
     return json;
