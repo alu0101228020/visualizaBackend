@@ -1,7 +1,7 @@
 const axios = require('axios');
 var cron = require('node-cron');
 const insertData = require('../services/poblacionParadaService');
-const CRON_TIME = require('../utils/constants');
+let CRON_TIME = require('../utils/constants');
 
 cron.schedule(CRON_TIME, () => {
     axios.get('https://datos.canarias.es/catalogos/general/api/action/package_show?id=36eccfaa-cc88-4139-84ff-c978ff5e5108', {}).then (response => {

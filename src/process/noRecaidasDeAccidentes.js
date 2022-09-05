@@ -1,7 +1,7 @@
 const axios = require('axios');
 var cron = require('node-cron');
 const insertData = require('../services/noRecaidasDeAccidentesService');
-const CRON_TIME_2 = require('../utils/constants');
+let CRON_TIME_2 = require('../utils/constants2');
 
 cron.schedule(CRON_TIME_2, () => {
     axios.get('http://localhost:3200/api/empleo/accidentesDeTrabajo', {}).then (response => {
