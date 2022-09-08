@@ -14,16 +14,19 @@ cron.schedule(CRON_TIME_2, () => {
                 let index1 = response.data.length - 1;
                 let index2 = response2.data.length - 1;
                 let size = response3.data.length - 1;
-                let dateModified = response2.data[index2].dateModified;
+                let dateModified1 = response.data[index1].dateModified;
+                let dateModified2 = response2.data[index2].dateModified;
                 if (response3.data.length == 0)  {
                     let datasetProcessed = processDataset(response.data[index1], response2.data[index2]);
                     insertData(datasetProcessed);
                     return;
                 }
-                if (response3.data[size].dateModified != dateModified) {
-                    let datasetProcessed = processDataset(response.data[index1], response2.data[index2]);
-                    insertData(datasetProcessed);
-                    return;
+                if (dateModified1 == dateModified2) {
+                    if (response3.data[size].dateModified != dateModified1) {
+                        let datasetProcessed = processDataset(response.data[index1], response2.data[index2]);
+                        insertData(datasetProcessed);
+                        return;
+                    }
                 }
             }).catch(error => console.log(error))
         }).catch(error => console.log(error)) 
